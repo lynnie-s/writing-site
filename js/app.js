@@ -52,8 +52,16 @@
     spell(text) {
       if (!this.ok) return;
       speechSynthesis.cancel();
-      const letters = text.replace(/[^a-zA-Z]/g, '').toUpperCase().split('');
-      letters.forEach((ch) => speechSynthesis.speak(this.make(ch, 0.7)));
+      // Say each letter by its spoken name. Sending a bare capital letter makes some
+      // voices read "capital T", so we give them the sound of the name instead.
+      const NAMES = {
+        a: 'ay', b: 'bee', c: 'see', d: 'dee', e: 'ee', f: 'eff', g: 'jee', h: 'aitch',
+        i: 'eye', j: 'jay', k: 'kay', l: 'el', m: 'em', n: 'en', o: 'oh', p: 'pee',
+        q: 'cue', r: 'are', s: 'ess', t: 'tee', u: 'you', v: 'vee', w: 'double you',
+        x: 'ex', y: 'why', z: 'zee',
+      };
+      const letters = text.toLowerCase().replace(/[^a-z]/g, '').split('');
+      letters.forEach((ch) => speechSynthesis.speak(this.make(NAMES[ch], 0.7)));
       speechSynthesis.speak(this.make(text, 0.8));
     },
     stop() { if (this.ok) speechSynthesis.cancel(); },
