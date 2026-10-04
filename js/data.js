@@ -288,7 +288,17 @@
     });
   });
 
-  const DATA = { LESSONS, SIGHT_SETS };
+  // How each letter is SPOKEN when a child taps "Spell". Voices read bare capitals badly
+  // ("capital T") and respellings like "ay" as "aye", so these are real English words or
+  // clear respellings that sound like the letter name. Fix a single letter here if needed.
+  const SPELL = {
+    a: 'eigh', b: 'bee', c: 'sea', d: 'dee', e: 'ee', f: 'eff', g: 'gee', h: 'aitch',
+    i: 'eye', j: 'jay', k: 'kay', l: 'ell', m: 'em', n: 'en', o: 'oh', p: 'pea',
+    q: 'queue', r: 'are', s: 'ess', t: 'tea', u: 'you', v: 'vee', w: 'double you',
+    x: 'ex', y: 'why', z: 'zee',
+  };
+
+  const DATA = { LESSONS, SIGHT_SETS, SPELL };
   root.DATA = DATA;
   if (typeof module !== 'undefined' && module.exports) module.exports = DATA;
 })(typeof window !== 'undefined' ? window : globalThis);

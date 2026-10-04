@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>拼字發音測試</title>
+  <style>
+    body { font-family: system-ui, 'Noto Sans TC', sans-serif; margin: 0; padding: 20px; background: #fff8ec; color: #2b2d42; }
+    h1 { font-size: 1.4rem; }
+    p { max-width: 640px; line-height: 1.6; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; max-width: 800px; }
+    button { border: 3px solid #ff8a3d; background: #fff; border-radius: 16px; padding: 12px 6px; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+    button small { display: block; font-weight: 600; color: #8a8da6; margin-top: 2px; }
+    #all { margin: 14px 0; background: #17b3a3; color: #fff; border-color: #17b3a3; }
+  </style>
+</head>
+<body>
+  <h1>拼字發音測試</h1>
+  <p>按每個字母聽聽看，把唸錯的字母告訴 Tr. Jasmine 的工程師，只需要調那一個字母。測試用的唸法跟網站拼字功能用的是同一張表。</p>
+  <button id="all">▶ 從 a 到 z 全部唸一遍</button>
+  <div class="grid" id="grid"></div>
+  <script src="js/data.js"></script>
+  <script>
+    const names = window.DATA.SPELL;
+    const say = (t) => { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.7; speechSynthesis.speak(u); };
+    const grid = document.getElementById('grid');
+    Object.keys(names).forEach((ch) => {
+      const b = document.createElement('button');
+      b.innerHTML = ch + '<small>' + names[ch] + '</small>';
+      b.onclick = () => say(names[ch]);
+      grid.appendChild(b);
+    });
+    document.getElementById('all').onclick = () => {
+      speechSynthesis.cancel();
+      Object.keys(names).forEach((ch) => { const u = new SpeechSynthesisUtterance(names[ch]); u.lang = 'en-US'; u.rate = 0.7; speechSynthesis.speak(u); });
+    };
+  </script>
+</body>
+</html>
