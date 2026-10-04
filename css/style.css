@@ -225,6 +225,7 @@ h1, h2, h3 { font-family: 'Baloo 2', 'Nunito', sans-serif; margin: 0; }
 .count { font-weight: 800; color: #8a8da6; }
 
 .foot { text-align: center; padding: 14px; color: #8a8da6; font-size: 0.85rem; }
+.foot .notice { margin: 0 0 8px; color: #5a5d78; font-weight: 800; line-height: 1.6; }
 
 @media (max-width: 560px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
