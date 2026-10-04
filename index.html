@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tr. Jasmine的寫作法典</title>
+  <meta name="description" content="Watch, listen and trace. Learn to write English words stroke by stroke.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✏️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#/">✏️ Tr. Jasmine的寫作法典</a>
+    <span class="tag">Watch. Listen. Trace.</span>
+  </header>
+
+  <main id="app"></main>
+
+  <footer class="foot">
+    Voices come from your browser. Chrome, Edge and Safari sound best.
+  </footer>
+
+  <div id="modal" class="modal" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+      <button class="icon-btn close" data-act="close" id="mClose" aria-label="Close">✕</button>
+
+      <div class="m-head">
+        <div class="m-pic" id="mPic"></div>
+        <div>
+          <h2 id="mTitle"></h2>
+          <div class="m-zh" id="mZh"></div>
+        </div>
+      </div>
+
+      <div class="board" id="boardWrap">
+        <svg id="board" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Handwriting practice board"></svg>
+      </div>
+
+      <div class="controls">
+        <div class="group">
+          <span class="group-label">Hear it</span>
+          <button class="btn" data-act="listen">🔊 Listen</button>
+          <button class="btn" data-act="slow">🐢 Slow</button>
+          <button class="btn" data-act="spell">🔤 Spell</button>
+        </div>
+        <div class="group">
+          <span class="group-label">Write it</span>
+          <button class="btn primary" data-act="watch">▶ Watch</button>
+          <button class="btn" data-act="step">⏭ Next stroke</button>
+          <button class="btn" data-act="reset">↺ Reset</button>
+        </div>
+        <div class="group">
+          <span class="group-label">Your turn</span>
+          <button class="btn accent" data-act="trace" id="traceBtn" aria-pressed="false">✏️ Trace</button>
+          <button class="btn" data-act="clear">🧽 Clear</button>
+        </div>
+        <div class="group opts">
+          <label><input type="checkbox" data-pref="slow"> Slow pen</label>
+          <label><input type="checkbox" data-pref="nums"> Stroke numbers</label>
+          <label><input type="checkbox" data-pref="auto"> Auto play</label>
+        </div>
+      </div>
+
+      <div class="nav">
+        <button class="btn" data-act="prev">◀ Back</button>
+        <span id="mCount" class="count"></span>
+        <button class="btn" data-act="next">Next ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/letters.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
