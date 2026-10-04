@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
   <header class="top">
@@ -25,7 +25,7 @@
 
   <div id="modal" class="modal" hidden>
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-      <button class="icon-btn close" data-act="close" id="mClose" aria-label="Close">✕</button>
+      <button class="icon-btn close" data-act="close" id="mClose" aria-label="關閉">✕</button>
 
       <div class="m-head">
         <div class="m-pic" id="mPic"></div>
@@ -41,40 +41,39 @@
 
       <div class="controls">
         <div class="group">
-          <span class="group-label">Hear it</span>
-          <button class="btn" data-act="listen">🔊 Listen</button>
-          <button class="btn" data-act="slow">🐢 Slow</button>
-          <button class="btn" data-act="spell">🔤 Spell</button>
+          <span class="group-label">聽一聽</span>
+          <button class="btn" data-act="listen">🔊 聽發音</button>
+          <button class="btn" data-act="slow">🐢 慢速聽</button>
+          <button class="btn" data-act="spell">🔤 拼字</button>
         </div>
         <div class="group">
-          <span class="group-label">Write it</span>
-          <button class="btn primary" data-act="watch">▶ Watch</button>
-          <button class="btn" data-act="step">⏭ Next stroke</button>
-          <button class="btn" data-act="reset">↺ Reset</button>
+          <span class="group-label">看筆順</span>
+          <button class="btn primary" data-act="watch">▶ 播放筆順</button>
+          <button class="btn" data-act="step">⏭ 下一筆</button>
+          <button class="btn" data-act="reset">↺ 重來</button>
         </div>
         <div class="group">
-          <span class="group-label">Your turn</span>
-          <button class="btn accent" data-act="trace" id="traceBtn" aria-pressed="false">✏️ Trace</button>
-          <button class="btn" data-act="clear">🧽 Clear</button>
+          <span class="group-label">換你寫</span>
+          <button class="btn accent" data-act="trace" id="traceBtn" aria-pressed="false">✏️ 描寫</button>
+          <button class="btn" data-act="clear">🧽 擦掉</button>
         </div>
         <div class="group opts">
-          <label><input type="checkbox" data-pref="slow"> Slow pen</label>
-          <label><input type="checkbox" data-pref="nums"> Stroke numbers</label>
-          <label><input type="checkbox" data-pref="auto"> Auto play</label>
+          <label><input type="checkbox" data-pref="slow"> 慢速書寫</label>
+          <label><input type="checkbox" data-pref="nums"> 筆順數字</label>
+          <label><input type="checkbox" data-pref="auto"> 自動播放</label>
         </div>
       </div>
 
       <div class="nav">
-        <button class="btn" data-act="prev">◀ Back</button>
+        <button class="btn" data-act="prev">◀ 上一個</button>
         <span id="mCount" class="count"></span>
-        <button class="btn" data-act="next">Next ▶</button>
+        <button class="btn" data-act="next">下一個 ▶</button>
       </div>
     </div>
   </div>
 
-  <script src="js/data.js?v=3"></script>
-  <script src="js/letters.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/data.js?v=4"></script>
+  <script src="js/letters.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>
-
