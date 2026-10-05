@@ -16,23 +16,35 @@
 </head>
 <body>
   <h1>拼字發音測試</h1>
-  <p>按每個字母聽聽看，把唸錯的字母告訴 Tr. Jasmine 的工程師，只需要調那一個字母。測試用的唸法跟網站拼字功能用的是同一張表。</p>
+  <p>按每個字母聽聽看，這裡播放的是跟網站拼字功能同一批的字母音檔，每台裝置聽到的都一樣。哪個字母不對，告訴我是哪一個，我只重做那一個。</p>
   <button id="all">▶ 從 a 到 z 全部唸一遍</button>
   <div class="grid" id="grid"></div>
   <script src="js/data.js"></script>
   <script>
-    const names = window.DATA.SPELL;
-    const say = (t) => { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.7; speechSynthesis.speak(u); };
+    const letters = Object.keys(window.DATA.SPELL);
+    let cur = null, run = 0;
+    const play = (ch) => new Promise((resolve) => {
+      if (cur) cur.pause();
+      cur = new Audio('audio/letters/' + ch + '.mp3');
+      cur.onended = () => resolve(true);
+      cur.onerror = () => resolve(false);
+      const p = cur.play();
+      if (p && p.catch) p.catch(() => resolve(false));
+    });
     const grid = document.getElementById('grid');
-    Object.keys(names).forEach((ch) => {
+    letters.forEach((ch) => {
       const b = document.createElement('button');
-      b.innerHTML = ch + '<small>' + names[ch] + '</small>';
-      b.onclick = () => say(names[ch]);
+      b.innerHTML = ch.toUpperCase() + ' ' + ch;
+      b.onclick = () => { run++; play(ch); };
       grid.appendChild(b);
     });
-    document.getElementById('all').onclick = () => {
-      speechSynthesis.cancel();
-      Object.keys(names).forEach((ch) => { const u = new SpeechSynthesisUtterance(names[ch]); u.lang = 'en-US'; u.rate = 0.7; speechSynthesis.speak(u); });
+    document.getElementById('all').onclick = async () => {
+      const me = ++run;
+      for (const ch of letters) {
+        if (me !== run) return;
+        await play(ch);
+        await new Promise((r) => setTimeout(r, 300));
+      }
     };
   </script>
 </body>

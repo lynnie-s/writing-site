@@ -67,3 +67,15 @@ record MP3 files and swap the `Speech.say` function in `js/app.js` to play them.
 | Space | Watch the animation |
 | Left / Right | Previous / next word |
 | Esc | Close |
+
+## Sentence patterns
+
+A lesson can have a `sentences: [SN('...')]` list in `js/data.js`. They show in a "句型" section under the
+words, open in the same practice window, and wrap onto several writing lines. The Spell button is hidden
+for sentences. Capitals and punctuation (`. , ! ? '`) are defined in `js/letters.js`.
+
+## Letter audio
+
+`audio/letters/a.mp3` to `z.mp3` are the letter names used by the Spell button, so every device spells
+the same way. If a file fails to load, the browser voice is used with the respellings in `SPELL`
+(`js/data.js`).

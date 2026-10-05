@@ -231,3 +231,10 @@ h1, h2, h3 { font-family: 'Baloo 2', 'Nunito', sans-serif; margin: 0; }
   .grid { grid-template-columns: repeat(2, 1fr); }
   .btn { padding: 9px 11px; font-size: 0.95rem; }
 }
+
+/* sentence patterns */
+.grid.wide { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.word-card.sentence .open { min-height: 96px; padding: 14px 44px 14px 18px; align-items: flex-start; text-align: left; }
+.word-card.sentence .w { font-size: 1.1rem; line-height: 1.4; }
+#mTitle.long { font-size: clamp(1.1rem, 3.5vw, 1.6rem); line-height: 1.3; }
+.m-pic:empty { display: none; }

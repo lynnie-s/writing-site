@@ -18,6 +18,9 @@
     swatch: swatch || '',
   });
 
+  // SN(text): a sentence pattern. Shown in the "句型" section of a lesson, no picture.
+  const SN = (text) => ({ text, zh: '', emoji: '', swatch: '', sentence: true });
+
   // Hand-drawn pictures for words that have no good emoji. Any W() "emoji" value that
   // starts with <svg is drawn as artwork instead of text.
   const S = (inner) => '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + inner + '</svg>';
@@ -51,6 +54,17 @@
         W('good afternoon', '午安', '☀️'),
         W('good evening', '晚上好', '🌇'),
       ],
+      sentences: [
+        SN("How are you? I'm fine. How about you?"),
+        SN("I'm great, thank you."),
+        SN("My name is Tom. What's your name?"),
+        SN('Nice to meet you.'),
+        SN('Nice to meet you, too.'),
+        SN('See you later!'),
+        SN('Good morning!'),
+        SN('Good afternoon!'),
+        SN('Good evening!'),
+      ],
     },
     {
       id: 2,
@@ -67,6 +81,20 @@
         W('close', '關上', '🚪'),
         W('put away', '收起來', '🧺'),
         W('take out', '拿出來', '📤'),
+      ],
+      sentences: [
+        SN('Sit down, please.'),
+        SN('Stand up, please.'),
+        SN('Take out your book and pencil.'),
+        SN('Open your book.'),
+        SN('Please be quiet.'),
+        SN('Put away your book and pencil.'),
+        SN("What's your name?"),
+        SN('Close your book, please.'),
+        SN('How are you?'),
+        SN('Please stand up.'),
+        SN('Be quiet, please.'),
+        SN('Stand up and make a circle, please.'),
       ],
     },
     {

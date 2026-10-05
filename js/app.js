@@ -44,22 +44,57 @@
       if (this.voice) u.voice = this.voice;
       return u;
     },
+    token: 0,
+    audio: null,
+    // Stop everything that is playing (browser voice and letter audio).
+    halt() {
+      this.token++;
+      if (this.audio) { try { this.audio.pause(); } catch (e) { /* ignore */ } this.audio = null; }
+      if (this.ok) speechSynthesis.cancel();
+    },
     say(text, rate) {
+      this.halt();
       if (!this.ok) return;
-      speechSynthesis.cancel();
       speechSynthesis.speak(this.make(text, rate || 0.85));
     },
+    // Spell a word with pre-recorded letter names (audio/letters/a.mp3 ... z.mp3) so every
+    // device says exactly the same thing. If a file can't play, fall back to the browser voice
+    // using the respelling table in data.js.
     spell(text) {
-      if (!this.ok) return;
-      speechSynthesis.cancel();
-      // Say each letter by its spoken name. Sending a bare capital letter makes some
-      // voices read "capital T", so we give them the sound of the name instead.
-      const NAMES = window.DATA.SPELL; // edit the table in js/data.js to tune a letter
+      this.halt();
+      const tk = this.token;
+      const names = window.DATA.SPELL;
       const letters = text.toLowerCase().replace(/[^a-z]/g, '').split('');
-      letters.forEach((ch) => speechSynthesis.speak(this.make(NAMES[ch], 0.7)));
-      speechSynthesis.speak(this.make(text, 0.8));
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const player = this.audio || (this.audio = new Audio()); // one element, so iPhones keep it unlocked
+      const playFile = (ch) => new Promise((resolve) => {
+        const a = player;
+        a.src = 'audio/letters/' + ch + '.mp3';
+        a.onended = () => resolve(true);
+        a.onerror = () => resolve(false);
+        const p = a.play();
+        if (p && p.catch) p.catch(() => resolve(false));
+      });
+      const speakName = (ch) => new Promise((resolve) => {
+        if (!this.ok) return resolve();
+        const u = this.make(names[ch], 0.7);
+        u.onend = resolve;
+        u.onerror = resolve;
+        speechSynthesis.speak(u);
+      });
+      (async () => {
+        for (const ch of letters) {
+          if (tk !== this.token) return;
+          if (!(await playFile(ch))) {
+            if (tk !== this.token) return;
+            await speakName(ch);
+          }
+          await wait(180);
+        }
+        if (tk === this.token) this.say(text, 0.8);
+      })();
     },
-    stop() { if (this.ok) speechSynthesis.cancel(); },
+    stop() { this.halt(); },
   };
   Speech.init();
 
@@ -80,6 +115,14 @@
   }
 
   function cardHTML(it, i, color) {
+    if (it.sentence) {
+      return (
+        '<div class="word-card sentence" style="--c:' + color + '">' +
+        '<button class="open" data-open="' + i + '"><span class="w">' + it.text + '</span></button>' +
+        '<button class="spk" data-say="' + i + '" aria-label="Listen">🔊</button>' +
+        '</div>'
+      );
+    }
     return (
       '<div class="word-card" style="--c:' + color + '">' +
       '<button class="open" data-open="' + i + '">' + picHTML(it) +
@@ -111,8 +154,8 @@
       '<h2 class="section-title">Sight Words</h2><div class="grid">' + sights + '</div>';
   }
 
-  function renderWordPage(title, subtitle, color, words, plurals) {
-    const items = words.concat(plurals || []);
+  function renderWordPage(title, subtitle, color, words, plurals, sentences) {
+    const items = words.concat(plurals || [], sentences || []);
     current = { items, color };
     let html =
       '<a class="back" href="#/">◀ All lessons</a>' +
@@ -122,6 +165,11 @@
     if (plurals && plurals.length) {
       html += '<h2 class="section-title">Plurals</h2><div class="grid">' +
         plurals.map((it, i) => cardHTML(it, words.length + i, color)).join('') + '</div>';
+    }
+    if (sentences && sentences.length) {
+      const base = words.length + (plurals ? plurals.length : 0);
+      html += '<h2 class="section-title">句型 Sentences</h2><div class="grid wide">' +
+        sentences.map((it, i) => cardHTML(it, base + i, color)).join('') + '</div>';
     }
     app.innerHTML = html;
   }
@@ -133,7 +181,7 @@
     window.scrollTo(0, 0);
     if (parts[0] === 'lesson' && LESSONS[n - 1]) {
       const l = LESSONS[n - 1];
-      renderWordPage('Lesson ' + l.id + ': ' + l.title, 'Tap a card to watch and practice. Tap 🔊 to listen.', PALETTE[(n - 1) % PALETTE.length], l.words, l.plurals);
+      renderWordPage('Lesson ' + l.id + ': ' + l.title, 'Tap a card to watch and practice. Tap 🔊 to listen.', PALETTE[(n - 1) % PALETTE.length], l.words, l.plurals, l.sentences);
     } else if (parts[0] === 'sight' && SIGHT_SETS[n - 1]) {
       const s = SIGHT_SETS[n - 1];
       renderWordPage('Sight Words ' + s.id, 'These words show up everywhere. Learn to write them by heart!', s.color, s.words);
@@ -174,6 +222,7 @@
           const path = el('path', { d: s.d, class: 'ink' }, layers.ink);
           const len = path.getTotalLength();
           const badge = el('g', { class: 'badge', transform: 'translate(' + (s.start[0] - 12) + ' ' + (s.start[1] - 12) + ')' }, layers.badges);
+          if (g.punct) badge.style.display = 'none'; // no stroke numbers on . , ! ? '
           el('circle', { r: 9 }, badge);
           const t = el('text', {}, badge);
           t.textContent = si + 1;
@@ -197,7 +246,7 @@
 
     function draw(i, tk) {
       const s = strokes[i];
-      const speed = prefs.slow ? 110 : 210;
+      const speed = (prefs.slow ? 110 : 210) * (strokes.length > 24 ? 1.6 : 1); // long sentences move faster
       const dur = Math.max(380, (s.len / speed) * 1000);
       s.path.style.opacity = 1;
       s.path.style.strokeDashoffset = s.len;
@@ -251,7 +300,7 @@
   let layers = null;
 
   function loadBoard(text) {
-    const lay = Letters.layout(text);
+    const lay = Letters.layout(text, text.length > 30 ? 820 : 700); // long sentences get a wider line
     const W = Math.max(480, lay.width);
     const H = lay.height;
     const M = Letters.metrics;
@@ -322,6 +371,9 @@
   function showWord(autoplay) {
     const it = current.items[state.idx];
     $('#mTitle').textContent = it.text;
+    $('#mTitle').classList.toggle('long', it.text.length > 22);
+    const spellBtn = modal.querySelector('[data-act="spell"]');
+    if (spellBtn) spellBtn.hidden = !!it.sentence; // spelling a whole sentence is too long
     $('#mZh').textContent = it.zh;
     $('#mPic').innerHTML = it.img ? imgHTML(it, 'mimg') : it.swatch ? '<span class="swatch" style="background:' + it.swatch + '"></span>' : it.emoji;
     $('#mCount').textContent = state.idx + 1 + ' / ' + current.items.length;

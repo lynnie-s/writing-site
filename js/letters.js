@@ -16,7 +16,7 @@
   'use strict';
 
   const AT = 15, XT = 60, BL = 110, DT = 155;
-  const LINE_H = 175, GAP = 12, SPACE = 40, PAD = 28;
+  const LINE_H = 175, GAP = 12, SPACE = 40, PAD = 28, TIGHT = 3;
 
   // Sample an elliptical arc. Angles in degrees, counterclockwise on screen is "increasing".
   function arc(cx, cy, rx, ry, a0, a1) {
@@ -84,6 +84,32 @@
     I: { w: 40, s: [ln(20, AT, 20, BL), ln(8, AT, 32, AT), ln(8, BL, 32, BL)] },
     T: { w: 60, s: [ln(5, AT, 55, AT), ln(30, AT, 30, BL)] },
     '-': { w: 36, s: [ln(5, 85, 31, 85)] },
+
+    // capitals used in the sentence patterns (stroke order as taught: top to bottom, left to right)
+    B: {
+      w: 64,
+      s: [
+        ln(6, AT, 6, BL),
+        join(ln(6, AT, 28, AT), arc(28, 37, 22, 22, 90, -90), ln(28, 59, 6, 59)),
+        join(ln(6, 59, 30, 59), arc(30, 84.5, 25, 25.5, 90, -90), ln(30, BL, 6, BL)),
+      ],
+    },
+    C: { w: 66, s: [arc(36, 62.5, 30, 47.5, 40, 320)] },
+    G: { w: 70, s: [arc(36, 62.5, 30, 47.5, 40, 360), ln(66, 62.5, 38, 62.5)] },
+    H: { w: 62, s: [ln(6, AT, 6, BL), ln(52, AT, 52, BL), ln(6, 62, 52, 62)] },
+    M: { w: 74, s: [ln(6, BL, 6, AT), ln(6, AT, 34, BL), ln(34, BL, 62, AT), ln(62, AT, 62, BL)] },
+    N: { w: 62, s: [ln(6, BL, 6, AT), ln(6, AT, 52, BL), ln(52, BL, 52, AT)] },
+    O: { w: 68, s: [arc(34, 62.5, 30, 47.5, 90, 450)] },
+    P: { w: 58, s: [ln(6, AT, 6, BL), join(ln(6, AT, 28, AT), arc(28, 42, 24, 27, 90, -90), ln(28, 69, 6, 69))] },
+    S: { w: 62, s: [join(arc(31, 39, 22, 24, 40, 270), arc(31, 86, 25, 24, 90, -140))] },
+    W: { w: 92, s: [[[4, AT], [24, BL], [46, AT], [68, BL], [88, AT]]] },
+
+    // punctuation (t: 1 means "sit close to the letter before me")
+    '.': { w: 20, t: 1, s: [ln(8, 106, 8, 107)] },
+    ',': { w: 20, t: 1, s: [[[9, 102], [8, 112], [3, 122]]] },
+    '!': { w: 18, t: 1, s: [ln(8, AT, 8, 82), ln(8, 106, 8, 107)] },
+    '?': { w: 52, t: 1, s: [join(arc(26, 38, 20, 22, 160, -80), [[26, 68], [26, 84]]), ln(26, 106, 26, 107)] },
+    "'": { w: 14, t: 1, s: [ln(7, 17, 5, 38)] },
   };
 
   const glyphFor = (ch) => G[ch] || G[ch.toLowerCase()] || null;
@@ -93,7 +119,7 @@
     for (const ch of word) {
       const g = glyphFor(ch);
       if (!g) continue;
-      w += (first ? 0 : GAP) + g.w;
+      w += (first ? 0 : g.t ? TIGHT : GAP) + g.w;
       first = false;
     }
     return w;
@@ -133,20 +159,24 @@
       let x = PAD;
       const dy = li * LINE_H;
       line.words.forEach((wd, wi) => {
+        let first = true;
         for (const ch of wd) {
           const g = glyphFor(ch);
           if (!g) continue;
+          if (!first) x += g.t ? TIGHT : GAP;
+          first = false;
           glyphs.push({
             ch,
             line: li,
+            punct: !!g.t,
             strokes: g.s.map((pts) => ({
               d: toPath(pts, x, dy),
               start: [fmt(pts[0][0] + x), fmt(pts[0][1] + dy)],
             })),
           });
-          x += g.w + GAP;
+          x += g.w;
         }
-        if (wi < line.words.length - 1) x += SPACE - GAP;
+        if (wi < line.words.length - 1) x += SPACE;
       });
     });
 
