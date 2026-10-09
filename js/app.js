@@ -380,7 +380,7 @@
     boardWrap.classList.toggle('hide-nums', !prefs.nums);
     loadBoard(it.text);
     if (autoplay && prefs.auto && !state.tracing) {
-      Speech.say(it.text);
+      Speech.say(it.say || it.text);
       setTimeout(() => Player.play(), 500);
     }
   }
@@ -411,8 +411,8 @@
 
   const actions = {
     close: closeModal,
-    listen: () => Speech.say(current.items[state.idx].text, 0.85),
-    slow: () => Speech.say(current.items[state.idx].text, 0.45),
+    listen: () => Speech.say(current.items[state.idx].say || current.items[state.idx].text, 0.85),
+    slow: () => Speech.say(current.items[state.idx].say || current.items[state.idx].text, 0.45),
     spell: () => Speech.spell(current.items[state.idx].text),
     watch: () => { if (state.tracing) setTrace(false); Player.play(); },
     step: () => { if (state.tracing) setTrace(false); Player.step(); },
@@ -426,7 +426,7 @@
   /* ---------- events ---------- */
   app.addEventListener('click', (e) => {
     const say = e.target.closest('[data-say]');
-    if (say) { Speech.say(current.items[+say.dataset.say].text); return; }
+    if (say) { const it = current.items[+say.dataset.say]; Speech.say(it.say || it.text); return; }
     const open = e.target.closest('[data-open]');
     if (open) openModal(+open.dataset.open);
   });

@@ -19,7 +19,9 @@
   });
 
   // SN(text): a sentence pattern. Shown in the "句型" section of a lesson, no picture.
-  const SN = (text) => ({ text, zh: '', emoji: '', swatch: '', sentence: true });
+  // The optional second argument is what gets SPOKEN when it differs from what is written
+  // (for example "mom/mother" is written with a slash but read as "mom, or mother").
+  const SN = (text, say) => ({ text, say: say || '', zh: '', emoji: '', swatch: '', sentence: true });
 
   // Hand-drawn pictures for words that have no good emoji. Any W() "emoji" value that
   // starts with <svg is drawn as artwork instead of text.
@@ -114,6 +116,20 @@
         W('friend', '朋友', '🧑‍🤝‍🧑'),
         W('brother', '兄弟', '👦'),
         W('sister', '姊妹', '👧'),
+      ],
+      sentences: [
+        SN('Who is she?'),
+        SN('Who is he?'),
+        SN('She is a girl.'),
+        SN('She is a woman.'),
+        SN('He is a boy.'),
+        SN('He is a man.'),
+        SN('She is my mom/mother.', 'She is my mom, or mother.'),
+        SN('He is my dad/father.', 'He is my dad, or father.'),
+        SN('He is my friend.'),
+        SN('She is my friend.'),
+        SN('He is my brother.'),
+        SN('She is my sister.'),
       ],
     },
     {
